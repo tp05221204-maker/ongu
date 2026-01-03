@@ -1,96 +1,628 @@
-請幫我生成一個童裝後台介面Html
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONGUKIDS.STUDIO | 門市營運系統</title>
+    <style>
+        :root {
+            --main-color: #c4b9a9;
+            --text-color: #81786c;
+            --bg-white: #ffffff;
+            --border-color: #e2ddd6;
+            --accent-light: #f8f6f4;
+            --font-size: 14px;
+        }
 
-後台介面具備以下功能
+        * { box-sizing: border-box; }
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--accent-light);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
 
+        /* 側邊導航系統 */
+        .sidebar {
+            width: 240px;
+            background: var(--main-color);
+            color: white;
+            position: fixed;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 30px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            letter-spacing: 1px;
+        }
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: var(--font-size);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item.active {
+            background: var(--bg-white);
+            color: var(--main-color);
+            font-weight: bold;
+        }
 
+        /* 主要內容區域 */
+        .main-content { margin-left: 240px; flex: 1; padding: 25px; }
+        .card { background: var(--bg-white); padding: 20px; border-radius: 4px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        .hidden { display: none !important; }
+        
+        h2 { 
+            margin: 0 0 20px 0; font-size: 18px; color: var(--main-color); 
+            border-left: 4px solid var(--main-color); padding-left: 12px;
+        }
 
-後台進銷存功能:
+        input, select {
+            width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 2px;
+            color: var(--text-color); font-size: var(--font-size); margin-bottom: 10px; outline: none;
+        }
+        input:focus { border-color: var(--main-color); }
 
-1.老闆可以個別上傳商品圖片檔
+        button {
+            cursor: pointer; padding: 10px 20px; border: 1px solid var(--main-color);
+            background: var(--bg-white); color: var(--main-color); font-weight: bold; transition: 0.2s;
+        }
+        button.btn-fill { background: var(--main-color); color: white; border: none; }
+        button:hover { opacity: 0.8; }
 
-2.可設定價格
+        /* POS 門市結帳佈局 */
+        .pos-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        .pos-cats { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .cat-tag {
+            padding: 8px 18px; border-radius: 20px; border: 1px solid var(--main-color);
+            cursor: pointer; white-space: nowrap; font-size: 13px; color: var(--main-color); background: white;
+        }
+        .cat-tag.active { background: var(--main-color); color: white; }
 
-3.可設定顏色
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; }
+        .p-card { border: 1px solid var(--border-color); padding: 10px; text-align: center; cursor: pointer; background: white; border-radius: 4px; }
+        .p-card:hover { border-color: var(--main-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .p-card img { width: 100%; height: 100px; object-fit: cover; margin-bottom: 8px; border-radius: 2px; background: #f9f9f9; }
+        .p-card-name { font-size: 12px; font-weight: bold; height: 34px; overflow: hidden; margin-bottom: 4px; line-height: 1.4; }
 
-4.可設定尺寸
+        .cart-panel { background: white; border: 1px solid var(--border-color); padding: 20px; height: 85vh; display: flex; flex-direction: column; position: sticky; top: 25px; }
+        .cart-list { flex: 1; overflow-y: auto; border-top: 1px solid var(--border-color); margin-top: 15px; }
+        .cart-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dotted #eee; font-size: 13px; }
+        
+        .total-box { border-top: 2px solid var(--main-color); padding-top: 15px; margin-top: 10px; }
+        .total-price { font-size: 32px; font-weight: bold; color: var(--main-color); text-align: right; letter-spacing: -1px; }
 
-5.可設定商品條碼
+        /* 表格與列表 */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: left; font-size: 13px; }
+        th { background: var(--accent-light); color: var(--text-color); }
+        .status-badge { padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+        .status-on { background: #e8f5e9; color: #2e7d32; }
+        .status-off { background: #ffebee; color: #c62828; }
 
-6.可以追蹤進銷存
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 8px; width: 450px; }
+    </style>
+</head>
+<body>
 
-#尺寸,顏色的庫存需分開設定分開顯示
-#可點選進入編輯顏色,尺寸剩餘多少庫存,是否下架
-#可刪除商品
+<div class="sidebar">
+    <div class="sidebar-brand">ONGUKIDS.STUDIO</div>
+    <div class="nav-item active" onclick="showPage('pos', this)">門市結帳系統</div>
+    <div class="nav-item" onclick="showPage('inventory', this)">商品進銷存</div>
+    <div class="nav-item" onclick="showPage('addProd', this)">新增商品規格</div>
+    <div class="nav-item" onclick="showPage('category', this)">分類資料夾管理</div>
+    <div class="nav-item" onclick="showPage('report', this)">統計報表中心</div>
+</div>
 
-7.可選擇要顯示的商品分類
+<div class="main-content">
+    
+    <div id="pagePos" class="page-section">
+        <div class="pos-layout">
+            <div>
+                <div class="pos-cats" id="posTabs"></div>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="posSearch" placeholder="搜尋名稱 / 掃描條碼" onkeypress="handlePosInput(event)" style="margin:0; border: 2px solid var(--main-color);">
+                </div>
+                <div class="product-grid" id="posGrid"></div>
+            </div>
+            <div class="cart-panel">
+                <h2>收銀結帳</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <input type="text" id="cPhone" placeholder="會員電話" oninput="searchMem()">
+                    <input type="text" id="cName" placeholder="顧客名稱">
+                </div>
+                <div class="cart-list" id="cartList"></div>
+                
+                <div style="background: var(--accent-light); padding: 12px; border-radius: 4px;">
+                    <label style="font-size:12px; font-weight:bold;">折扣優惠</label>
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <select id="dType" onchange="updateTotal()" style="margin:0; flex:1;">
+                            <option value="none">無折扣</option>
+                            <option value="minus">滿額折抵 (金額)</option>
+                            <option value="percent">% 數折抵 (0.9=9折)</option>
+                        </select>
+                        <input type="number" id="dVal" value="0" oninput="updateTotal()" style="margin:0; width:80px;">
+                    </div>
+                </div>
 
-8.可設定分類
+                <div class="total-box">
+                    <div style="font-size:12px; text-align:right; margin-bottom:5px;">應付總額</div>
+                    <div class="total-price">NT$ <span id="finalTotal">0</span></div>
+                </div>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:15px;">
+                    <button class="btn-fill" onclick="checkout('現金')">現金</button>
+                    <button class="btn-fill" onclick="checkout('LINEPAY')">LINEPAY</button>
+                    <button class="btn-fill" onclick="checkout('刷卡')">刷卡</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-#分類設定名稱由店家設定
+    <div id="pageInventory" class="page-section hidden">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2>商品進銷存管理</h2>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="renderInv('all')">顯示全部</button>
+                    <button onclick="renderInv('on')">僅顯示上架</button>
+                    <button onclick="renderInv('off')">僅顯示下架</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>預覽</th>
+                        <th>分類</th>
+                        <th>品名</th>
+                        <th>規格 (顏色/尺寸)</th>
+                        <th>條碼</th>
+                        <th>單價</th>
+                        <th>庫存</th>
+                        <th>狀態</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="invBody"></tbody>
+            </table>
+        </div>
+    </div>
 
-9.可設定折扣
+    <div id="pageAddProd" class="page-section hidden">
+        <div class="card">
+            <h2>新增商品規格</h2>
+            <div style="display:grid; grid-template-columns: 320px 1fr; gap:40px;">
+                <div>
+                    <label>商品圖上傳</label>
+                    <div onclick="document.getElementById('fileInput').click()" style="width:100%; height:200px; border:2px dashed var(--border-color); display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; margin-bottom:15px; background:#fafafa;">
+                        <input type="file" id="fileInput" hidden onchange="handleImg(this)">
+                        <img id="preImg" style="width:100%; height:100%; object-fit:contain; display:none;">
+                        <span id="uploadHint">點擊選擇圖片</span>
+                    </div>
+                    <label>商品品名</label>
+                    <input type="text" id="pTitle" placeholder="請輸入商品名稱">
+                    <label>設定價格 (單價)</label>
+                    <input type="number" id="pPrice" placeholder="例如: 580">
+                    <label>商品分類</label>
+                    <select id="pCat"></select>
+                </div>
+                <div>
+                    <label>規格細節設定 (顏色、尺寸與條碼)</label>
+                    <div style="background: var(--accent-light); padding: 15px; border-radius: 4px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 100px 180px 40px; gap:8px; margin-bottom:10px; font-weight:bold; font-size:12px;">
+                            <div>顏色</div><div>尺寸</div><div>初始庫存</div><div>條碼</div><div></div>
+                        </div>
+                        <div id="skuRows"></div>
+                        <button onclick="addSkuRow()" style="width:100%; border-style:dashed; margin-top:10px;">+ 新增規格組合</button>
+                    </div>
+                    <div style="margin-top: 30px; text-align: right;">
+                        <button class="btn-fill" onclick="saveProd()" style="padding:15px 50px; font-size:16px;">確認儲存商品</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-#滿額折抵
-#%數折抵
+    <div id="pageCategory" class="page-section hidden">
+        <div class="card" style="max-width: 600px;">
+            <h2>分類資料夾管理</h2>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <input type="text" id="newCat" placeholder="輸入新分類名稱" style="margin:0;">
+                <button class="btn-fill" onclick="saveCat()">建立分類</button>
+            </div>
+            <table>
+                <thead><tr><th>分類名稱</th><th>商品數量</th><th>操作</th></tr></thead>
+                <tbody id="catBody"></tbody>
+            </table>
+        </div>
+    </div>
 
-10.可以完整觀看後台所有已建立商品
+    <div id="pageReport" class="page-section hidden">
+        <div class="card">
+            <h2>銷售營收統計</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;">
+                <div class="card" style="background:var(--main-color); color:white; text-align:center; border:none;">
+                    <p style="margin:0; opacity:0.8;">本月訂單統計 (Current Month)</p>
+                    <h1 id="mTotal" style="font-size:36px; margin:10px 0;">0</h1>
+                </div>
+                <div class="card" style="border:2px solid var(--main-color); text-align:center;">
+                    <p style="margin:0; color:var(--text-color);">近 6 個月累計營收 (稅務參考)</p>
+                    <h1 id="hTotal" style="font-size:36px; margin:10px 0; color:var(--main-color);">0</h1>
+                </div>
+            </div>
+            <h3>交易歷史紀錄</h3>
+            <table id="orderTable">
+                <thead><tr><th>交易時間</th><th>顧客</th><th>付款方式</th><th>實收總額</th></tr></thead>
+                <tbody id="orderBody"></tbody>
+            </table>
+        </div>
+    </div>
 
-#另建立一個側邊分類
+</div>
 
-#包含已下架/已上架
+<div id="editModal" class="modal hidden">
+    <div class="modal-content">
+        <h3 id="editLabel" style="color:var(--main-color); margin-top:0;">編輯規格</h3>
+        <div style="margin-bottom:15px;">
+            <label>剩餘庫存數量</label>
+            <input type="number" id="editQty">
+        </div>
+        <div style="margin-bottom:20px;">
+            <label>上下架狀態</label>
+            <select id="editStatus">
+                <option value="on">上架中</option>
+                <option value="off">已下架</option>
+            </select>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-fill" style="flex:1" onclick="updateInv()">儲存變更</button>
+            <button style="flex:1" onclick="closeEdit()">取消</button>
+        </div>
+    </div>
+</div>
 
-#可以在此自行建立分類資料夾
+<script>
+    // --- 核心資料邏輯 ---
+    let db = {
+        cats: JSON.parse(localStorage.getItem('ongu_cats')) || ["上衣", "褲裝", "洋裝", "配件"],
+        prods: JSON.parse(localStorage.getItem('ongu_prods')) || [],
+        orders: JSON.parse(localStorage.getItem('ongu_ords')) || [],
+        mems: JSON.parse(localStorage.getItem('ongu_mems')) || []
+    };
+    let cart = [];
+    let tempImgBase64 = "";
+    let editingRef = null;
 
+    // --- 初始化頁面 ---
+    window.onload = () => {
+        showPage('pos', document.querySelector('.nav-item'));
+    };
 
+    function showPage(id, el) {
+        document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+        document.getElementById('page' + id.charAt(0).toUpperCase() + id.slice(1)).classList.remove('hidden');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
 
+        if(id === 'pos') renderPos();
+        if(id === 'inventory') renderInv();
+        if(id === 'category') renderCat();
+        if(id === 'report') renderReport();
+        if(id === 'addProd') {
+            document.getElementById('pCat').innerHTML = db.cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('skuRows').innerHTML = "";
+            addSkuRow();
+        }
+    }
 
-門市結帳系統(需與後台管理連動)
+    // --- 新增商品邏輯 ---
+    function handleImg(input) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            tempImgBase64 = e.target.result;
+            document.getElementById('preImg').src = tempImgBase64;
+            document.getElementById('preImg').style.display = 'block';
+            document.getElementById('uploadHint').style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
 
-上方必須顯示所有商品分類以便我手動添加商品結帳
+    function addSkuRow() {
+        const div = document.createElement('div');
+        div.className = "sku-entry";
+        div.style = "display:grid; grid-template-columns: 1fr 1fr 100px 180px 40px; gap:8px; margin-bottom:8px;";
+        div.innerHTML = `
+            <input type="text" placeholder="顏色" class="sk-color">
+            <input type="text" placeholder="尺寸" class="sk-size">
+            <input type="number" placeholder="0" class="sk-stock">
+            <input type="text" placeholder="條碼掃描" class="sk-code">
+            <button onclick="this.parentElement.remove()" style="color:red; border:none; background:none; font-size:18px;">×</button>
+        `;
+        document.getElementById('skuRows').appendChild(div);
+    }
 
-1.添加商品
+    function saveProd() {
+        const title = document.getElementById('pTitle').value;
+        const price = parseFloat(document.getElementById('pPrice').value);
+        if(!title || isNaN(price)) return alert("請填寫商品品名與價格");
 
-#可以手動選擇商品添加也可以使用條碼槍掃描商品條碼
+        const skus = [];
+        document.querySelectorAll('.sku-entry').forEach(row => {
+            const color = row.querySelector('.sk-color').value;
+            const size = row.querySelector('.sk-size').value;
+            const stock = parseInt(row.querySelector('.sk-stock').value) || 0;
+            const code = row.querySelector('.sk-code').value;
+            if(color && code) {
+                skus.push({ color, size, stock, code, status: 'on' });
+            }
+        });
 
-2.可搜尋添加商品
+        if(skus.length === 0) return alert("請至少設定一組規格組合與條碼");
 
-#可刪除添加錯誤的商品
+        db.prods.push({
+            id: Date.now(),
+            title,
+            price, // 價格存在主體
+            cat: document.getElementById('pCat').value,
+            img: tempImgBase64,
+            skus
+        });
+        
+        save();
+        alert("商品上架成功！");
+        location.reload();
+    }
 
-3.輸入顧客名稱輸入後即建立會員
+    // --- POS 結帳系統邏輯 (修復價格 BUG) ---
+    function renderPos(cat = 'all') {
+        const tabs = document.getElementById('posTabs');
+        tabs.innerHTML = `<div class="cat-tag ${cat==='all'?'active':''}" onclick="renderPos('all')">全部商品</div>`;
+        db.cats.forEach(c => {
+            tabs.innerHTML += `<div class="cat-tag ${cat===c?'active':''}" onclick="renderPos('${c}')">${c}</div>`;
+        });
 
-4.輸入電話,輸入後即建立會員
+        const grid = document.getElementById('posGrid');
+        grid.innerHTML = "";
+        db.prods.forEach(p => {
+            if(cat !== 'all' && p.cat !== cat) return;
+            p.skus.forEach(s => {
+                if(s.status === 'off') return;
+                const card = document.createElement('div');
+                card.className = "p-card";
+                card.onclick = () => addToCart(s.code);
+                card.innerHTML = `
+                    <img src="${p.img || ''}">
+                    <div class="p-card-name">${p.title}</div>
+                    <div style="font-size:11px; color:#aaa;">${s.color} / ${s.size}</div>
+                    <div style="color:var(--main-color); font-weight:bold; margin-top:5px;">$${p.price}</div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+    }
 
-#輸入電話如有會員資料也可直接顯示
+    function handlePosInput(e) {
+        if(e.key === 'Enter') {
+            addToCart(e.target.value);
+            e.target.value = "";
+        }
+    }
 
-5.結帳方式可選現金/LINEPAY/刷卡
+    function addToCart(code) {
+        let found = null;
+        // 關鍵修復：從 SKU 條碼反查商品主體以獲取正確的價格
+        db.prods.forEach(p => {
+            const s = p.skus.find(sku => sku.code === code);
+            if(s) {
+                found = {
+                    code: s.code,
+                    name: `${p.title} (${s.color}/${s.size})`,
+                    price: parseFloat(p.price), // 強制確保價格是數字
+                    qty: 1
+                };
+            }
+        });
 
+        if(!found) return;
+        const exist = cart.find(c => c.code === code);
+        if(exist) {
+            exist.qty++;
+        } else {
+            cart.push(found);
+        }
+        renderCart();
+    }
 
+    function renderCart() {
+        const list = document.getElementById('cartList');
+        list.innerHTML = cart.map((c, i) => `
+            <div class="cart-item">
+                <div style="flex:1;">
+                    <b>${c.name}</b><br>
+                    <span style="color:var(--main-color)">$${c.price}</span>
+                </div>
+                <div style="width:40px; text-align:center;">x${c.qty}</div>
+                <div style="width:70px; text-align:right; font-weight:bold;">$${c.price * c.qty}</div>
+                <div style="color:#ff4444; cursor:pointer; margin-left:10px;" onclick="cart.splice(${i},1);renderCart();">×</div>
+            </div>
+        `).join('');
+        updateTotal();
+    }
 
-最後一個功能分類需要當月訂單統計
+    function updateTotal() {
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const type = document.getElementById('dType').value;
+        const val = parseFloat(document.getElementById('dVal').value) || 0;
+        let final = subtotal;
 
-以及前6個月訂單統計(需繳交給國稅局的)
+        if(type === 'minus') final -= val;
+        else if(type === 'percent' && val > 0) final *= (val > 1 ? val / 100 : val);
 
+        document.getElementById('finalTotal').innerText = Math.max(0, Math.round(final)).toLocaleString();
+    }
 
+    function checkout(pay) {
+        if(!cart.length) return;
+        const total = parseInt(document.getElementById('finalTotal').innerText.replace(/,/g, ''));
+        const phone = document.getElementById('cPhone').value;
+        const name = document.getElementById('cName').value;
 
-色彩計畫
+        // 庫存追蹤與扣減
+        cart.forEach(c => {
+            db.prods.forEach(p => {
+                const s = p.skus.find(sku => sku.code === c.code);
+                if(s) s.stock -= c.qty;
+            });
+        });
 
-主色調 (#c4b9a9)：應用於導覽標籤、按鈕、標題線條與價格顯示，營造大地的暖調。
+        // 會員建立
+        if(phone && !db.mems.find(m => m.phone === phone)) {
+            db.mems.push({ phone, name: name || '新會員' });
+        }
 
-文字顏色 (#81786c)：用於內文與表單標籤，比起純黑色更柔和。
+        db.orders.push({ date: new Date(), name: name || '散客', pay, total });
+        save();
+        alert("交易完成！");
+        cart = [];
+        document.getElementById('cPhone').value = "";
+        document.getElementById('cName').value = "";
+        renderCart();
+    }
 
-背景與細節 (#ffffff)：純白色的卡片與容器，確保介面乾淨不雜亂。
+    function searchMem() {
+        const phone = document.getElementById('cPhone').value;
+        const m = db.mems.find(x => x.phone === phone);
+        if(m) document.getElementById('cName').value = m.name;
+    }
 
-部分背景顏色可以用#c4b9a9下去加強增加層次感
+    // --- 進銷存與編輯邏輯 ---
+    function renderInv(filter = 'all') {
+        const tbody = document.getElementById('invBody');
+        tbody.innerHTML = "";
+        db.prods.forEach((p, pi) => {
+            p.skus.forEach((s, si) => {
+                if(filter === 'on' && s.status !== 'on') return;
+                if(filter === 'off' && s.status !== 'off') return;
 
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${p.img || ''}" style="width:40px; height:40px; object-fit:cover; border-radius:2px;"></td>
+                        <td>${p.cat}</td>
+                        <td>${p.title}</td>
+                        <td>${s.color} / ${s.size}</td>
+                        <td>${s.code}</td>
+                        <td>$${p.price}</td>
+                        <td style="font-weight:bold">${s.stock}</td>
+                        <td><span class="status-badge ${s.status==='on'?'status-on':'status-off'}">${s.status==='on'?'上架中':'已下架'}</span></td>
+                        <td>
+                            <button onclick="openEdit(${pi}, ${si})">編輯庫存</button>
+                            <button onclick="deleteProd(${pi})" style="color:red; border-color:red; margin-left:5px;">刪除商品</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+    }
 
+    function openEdit(pi, si) {
+        editingRef = { pi, si };
+        const s = db.prods[pi].skus[si];
+        document.getElementById('editLabel').innerText = `${db.prods[pi].title} (${s.color}/${s.size})`;
+        document.getElementById('editQty').value = s.stock;
+        document.getElementById('editStatus').value = s.status;
+        document.getElementById('editModal').classList.remove('hidden');
+    }
 
-系統需完善,完整介面乾淨,主標題大小一致,內容字體包含邊框大小一致
+    function updateInv() {
+        const { pi, si } = editingRef;
+        db.prods[pi].skus[si].stock = parseInt(document.getElementById('editQty').value);
+        db.prods[pi].skus[si].status = document.getElementById('editStatus').value;
+        save();
+        closeEdit();
+        renderInv();
+    }
 
-主要是使用筆電做結帳,所以顯示方式可用電腦版下去製作
+    function closeEdit() { document.getElementById('editModal').classList.add('hidden'); }
 
-注意商品建立修復無法顯示價格的BUG
+    function deleteProd(pi) {
+        if(confirm("確定要刪除整個商品及其所有規格嗎？此動作無法復原。")) {
+            db.prods.splice(pi, 1);
+            save();
+            renderInv();
+        }
+    }
 
-門市結帳系統第一順位
-第二順位商品進銷存
-第三順位新增商品
-第四順位分類
+    // --- 分類與報表邏輯 ---
+    function saveCat() {
+        const name = document.getElementById('newCat').value;
+        if(name) {
+            db.cats.push(name);
+            save();
+            renderCat();
+            document.getElementById('newCat').value = "";
+        }
+    }
+
+    function renderCat() {
+        const body = document.getElementById('catBody');
+        body.innerHTML = db.cats.map((c, i) => `
+            <tr>
+                <td>${c}</td>
+                <td>${db.prods.filter(p => p.cat === c).length} 件商品</td>
+                <td><button onclick="db.cats.splice(${i},1);save();renderCat();">刪除分類</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function renderReport() {
+        const now = new Date();
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(now.getMonth() - 6);
+
+        let mTotal = 0;
+        let hTotal = 0;
+
+        db.orders.forEach(o => {
+            const d = new Date(o.date);
+            if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+                mTotal += o.total;
+            }
+            if(d >= sixMonthsAgo) {
+                hTotal += o.total;
+            }
+        });
+
+        document.getElementById('mTotal').innerText = `NT$ ${mTotal.toLocaleString()}`;
+        document.getElementById('hTotal').innerText = `NT$ ${hTotal.toLocaleString()}`;
+
+        document.getElementById('orderBody').innerHTML = db.orders.slice().reverse().map(o => `
+            <tr>
+                <td>${new Date(o.date).toLocaleString()}</td>
+                <td>${o.name}</td>
+                <td>${o.pay}</td>
+                <td style="font-weight:bold; color:var(--main-color)">$${o.total.toLocaleString()}</td>
+            </tr>
+        `).join('');
+    }
+
+    function save() {
+        localStorage.setItem('ongu_cats', JSON.stringify(db.cats));
+        localStorage.setItem('ongu_prods', JSON.stringify(db.prods));
+        localStorage.setItem('ongu_ords', JSON.stringify(db.orders));
+        localStorage.setItem('ongu_mems', JSON.stringify(db.mems));
+    }
+</script>
+
+</body>
+</html>
